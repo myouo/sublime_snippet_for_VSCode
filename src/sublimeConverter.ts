@@ -51,10 +51,19 @@ async function parseSublimeSnippet(filePath: string): Promise<SnippetDefinition>
 
 	const scopeRaw = snippetNode.scope?.[0];
 	const normalized = contentRaw.replace(/\r\n/g, '\n');
+	const lines = normalized.split('\n');
+
+	while (lines.length > 0 && lines[0].trim() === '') {
+		lines.shift();
+	}
+
+	while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
+		lines.pop();
+	}
 
 	return {
 		prefix: prefixRaw,
-		body: normalized.split('\n'),
+		body: lines,
 		description: 'Converted from Sublime Text',
 		scope: typeof scopeRaw === 'string' ? scopeRaw : undefined,
 	};

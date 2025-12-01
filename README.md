@@ -1,71 +1,52 @@
-# snip README
+# Sublime Snippet Converter
 
-This is the README for your extension "snip". After writing up a brief description, we recommend including the following sections.
+`sublime_snippet` helps you reuse your existing Sublime Text snippets in VS Code. The extension scans a folder of `.sublime-snippet` files, parses each definition, and generates the equivalent VS Code snippet JSON so you do not have to rebuild them manually.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- Converts every `.sublime-snippet` file in a folder with one command (`Sublime: Convert Snippets`).
+- Normalizes line endings and keeps your Sublime `tabTrigger`, content, scope, and a default description.
+- Writes the converted snippets to both the global VS Code snippet directory _and_ the current workspace’s `.vscode/sublime-converted.code-snippets` file for easy sharing with teammates.
+- Provides clear success and error notifications so you always know where the snippets were written.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- VS Code `1.90.0` or newer.
+- A folder containing one or more valid Sublime Text snippet files (`*.sublime-snippet`) using the standard `<snippet>` schema (must include `<content>` and `<tabTrigger>` nodes).
+
+No external CLI tools are required—the extension embeds the conversion logic and uses `xml2js` under the hood.
+
+## Usage
+
+1. Ensure your Sublime snippets are grouped in a folder (nested folders are not required; every file in the selected folder must be a Sublime snippet file).
+2. In VS Code, run the **Command Palette** (`Ctrl+Shift+P` / `Cmd+Shift+P`) and execute **`Sublime: Convert Snippets`**.
+3. Pick the folder that contains the `.sublime-snippet` files when prompted.
+4. Wait for the success toast. It will list:
+   - The path of the generated user snippet file (usually under `~/Library/Application Support/Code/User/snippets` on macOS, `%APPDATA%\Code\User\snippets` on Windows, or `~/.config/Code/User/snippets` on Linux).
+   - The workspace copy at `<workspace>/.vscode/sublime-converted.code-snippets` when applicable. If no folder is open, the workspace copy is skipped automatically.
+5. Reload VS Code (or use *Preferences: Configure User Snippets* → *Reload Snippets*) to start using the imported snippets.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+This extension does not add custom settings. Conversion behavior is intentionally simple: every `.sublime-snippet` file becomes one entry in the generated `sublime-converted.code-snippets` collection.
 
-For example:
+## Known Issues & Limitations
 
-This extension contributes the following settings:
+- Nested folders are not traversed—select the exact folder that contains the snippet files.
+- Custom Sublime fields outside of `<content>`, `<tabTrigger>`, and `<scope>` are ignored.
+- Conversion stops when a malformed XML file is detected to avoid producing partial results.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+If you hit other edge cases, please open an issue with the problematic snippet file attached.
 
-## Known Issues
+## Development
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+1. `npm install`
+2. Run the **Launch Extension** configuration (`F5`) to open a new Extension Development Host.
+3. Trigger the `Sublime: Convert Snippets` command inside the dev host and select a folder with sample snippets (see `testcases/` for small fixtures).
+4. Run `npm test` to execute the VS Code extension tests or `npm run lint` for ESLint.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- Initial release with folder-based conversion and user/workspace snippet output.
