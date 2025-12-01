@@ -1,21 +1,21 @@
 {
   "name": "snip",
   "displayName": "sublime_snippet",
-  "description": "",
+  "description": "Convert Sublime Text snippets into VS Code snippets.",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.106.1"
+    "vscode": "^1.90.0"
   },
-  "categories": [
-    "Other"
+  "categories": ["Other"],
+  "activationEvents": [
+    "onCommand:sublime.convertSnippets"
   ],
-  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "snip.helloWorld",
-        "title": "Hello World"
+        "command": "sublime.convertSnippets",
+        "title": "Sublime: Convert Snippets"
       }
     ]
   },
@@ -26,15 +26,19 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.106.1",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "22.x",
-    "typescript-eslint": "^8.46.3",
-    "eslint": "^9.39.1",
-    "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    },
+    "devDependencies": {
+      "@types/mocha": "^10.0.10",
+      "@types/node": "22.x",
+      "@types/vscode": "^1.106.1",
+      "@types/xml2js": "^0.4.14",
+      "@vscode/test-cli": "^0.0.12",
+      "@vscode/test-electron": "^2.5.2",
+      "eslint": "^9.39.1",
+      "typescript": "^5.9.3",
+      "typescript-eslint": "^8.46.3"
+    },
+    "dependencies": {
+      "xml2js": "^0.6.2"
+    }
   }
-}
