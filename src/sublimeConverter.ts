@@ -13,6 +13,16 @@ interface SnippetDefinition {
 interface ConversionResult {
 	userPath: string;
 	workspacePath?: string;
+	workspaceError?: string;
+}
+
+function isPermissionError(error: unknown): error is NodeJS.ErrnoException {
+	if (!error || typeof error !== 'object') {
+		return false;
+	}
+
+	const code = (error as NodeJS.ErrnoException).code;
+	return code === 'EACCES' || code === 'EPERM' || code === 'EROFS';
 }
 
 function getSnippetDirectory(): string {
@@ -96,13 +106,25 @@ export async function convertSublimeSnippets(sourceDir: string, workspaceDir?: s
 	await fs.promises.writeFile(userPath, serialized, 'utf8');
 
 	let workspacePath: string | undefined;
+	let workspaceError: string | undefined;
 
 	if (workspaceDir) {
 		const workspaceSnippetDir = path.join(workspaceDir, '.vscode');
-		await fs.promises.mkdir(workspaceSnippetDir, { recursive: true });
-		workspacePath = path.join(workspaceSnippetDir, 'sublime-converted.code-snippets');
-		await fs.promises.writeFile(workspacePath, serialized, 'utf8');
+		const workspaceTarget = path.join(workspaceSnippetDir, 'sublime-converted.code-snippets');
+
+		try {
+			await fs.promises.mkdir(workspaceSnippetDir, { recursive: true });
+			await fs.promises.writeFile(workspaceTarget, serialized, 'utf8');
+			workspacePath = workspaceTarget;
+		} catch (error) {
+			if (isPermissionError(error)) {
+				const message = error instanceof Error ? error.message : String(error);
+				workspaceError = `Permission denied writing to ${workspaceTarget}: ${message}`;
+			} else {
+				throw error;
+			}
+		}
 	}
 
-	return { userPath, workspacePath };
+	return { userPath, workspacePath, workspaceError };
 }

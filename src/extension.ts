@@ -20,11 +20,21 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			const folderPath = selection[0].fsPath;
-			const { userPath, workspacePath } = await convertSublimeSnippets(folderPath, workspaceDir);
+			const { userPath, workspacePath, workspaceError } = await convertSublimeSnippets(folderPath, workspaceDir);
 
-			const destinations = workspacePath
-				? `User snippets: ${userPath}\nWorkspace copy: ${workspacePath}`
-				: `User snippets: ${userPath}\n(No workspace open, skipped workspace copy)`;
+			const destinations = (() => {
+				const lines = [`User snippets: ${userPath}`];
+
+				if (workspacePath) {
+					lines.push(`Workspace copy: ${workspacePath}`);
+				} else if (workspaceDir) {
+					lines.push(`Workspace copy skipped: ${workspaceError ?? 'Unknown error'}`);
+				} else {
+					lines.push('(No workspace open, skipped workspace copy)');
+				}
+
+				return lines.join('\n');
+			})();
 
 			vscode.window.showInformationMessage(`Sublime snippets converted.\n${destinations}`);
 		} catch (error) {
