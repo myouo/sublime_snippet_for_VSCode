@@ -1,8 +1,14 @@
 {
   "name": "snip",
+  "author": {"name": "myouo"},
+  "publisher": "myouo",
   "displayName": "sublime_snippet",
   "description": "Convert Sublime Text snippets into VS Code snippets.",
-  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/myouo/sublime_snippet_for_VSCode"
+  },
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.90.0"
   },

@@ -1,52 +1,78 @@
 # Sublime Snippet Converter
 
-`sublime_snippet` helps you reuse your existing Sublime Text snippets in VS Code. The extension scans a folder of `.sublime-snippet` files, parses each definition, and generates the equivalent VS Code snippet JSON so you do not have to rebuild them manually.
+一个用于将 **Sublime Text Snippet** 转换为 **VS Code Snippet** 的扩展。
+本项目会自动识别当前操作系统，并根据系统类型匹配对应的 **VS Code Snippet** 存储目录，将生成的 Snippet 文件写入系统目录中；同时，会在当前工作区中额外拷贝一份，方便用户查看与管理。
 
-## Features
+## 使用方法
 
-- Converts every `.sublime-snippet` file in a folder with one command (`Sublime: Convert Snippets`).
-- Normalizes line endings and keeps your Sublime `tabTrigger`, content, scope, and a default description.
-- Writes the converted snippets to both the global VS Code snippet directory _and_ the current workspace’s `.vscode/sublime-converted.code-snippets` file for easy sharing with teammates.
-- Provides clear success and error notifications so you always know where the snippets were written.
+按下组合键 `Ctrl + Shift + P` 调出扩展搜索窗口并输入 `Sublime: Convert Snippets` （或直接搜索 `Snippets`）
+![Snippets](img/image.png)
 
-## Requirements
+选择 `Sublime Snippets` 所在的文件夹
+![Select](img/selectSnippetsFolder.png)
 
-- VS Code `1.90.0` or newer.
-- A folder containing one or more valid Sublime Text snippet files (`*.sublime-snippet`) using the standard `<snippet>` schema (must include `<content>` and `<tabTrigger>` nodes).
+转换成功后，右下角会弹出转换成功的提示：
+![Success](img/success.png)
 
-No external CLI tools are required—the extension embeds the conversion logic and uses `xml2js` under the hood.
+测试 Snippet 能否正常工作
+![test](img/testSnippet.png)
 
-## Usage
 
-1. Ensure your Sublime snippets are grouped in a folder (nested folders are not required; every file in the selected folder must be a Sublime snippet file).
-2. In VS Code, run the **Command Palette** (`Ctrl+Shift+P` / `Cmd+Shift+P`) and execute **`Sublime: Convert Snippets`**.
-3. Pick the folder that contains the `.sublime-snippet` files when prompted.
-4. Wait for the success toast. It will list:
-   - The path of the generated user snippet file (usually under `~/Library/Application Support/Code/User/snippets` on macOS, `%APPDATA%\Code\User\snippets` on Windows, or `~/.config/Code/User/snippets` on Linux).
-   - The workspace copy at `<workspace>/.vscode/sublime-converted.code-snippets` when applicable. If no folder is open, the workspace copy is skipped automatically.
-5. Reload VS Code (or use *Preferences: Configure User Snippets* → *Reload Snippets*) to start using the imported snippets.
 
-## Extension Settings
+---
+# FOR DEVELOPERS / 开发者
 
-This extension does not add custom settings. Conversion behavior is intentionally simple: every `.sublime-snippet` file becomes one entry in the generated `sublime-converted.code-snippets` collection.
+## Environment / 环境准备
 
-## Known Issues & Limitations
+### 1. 安装 `Node.js`
 
-- Nested folders are not traversed—select the exact folder that contains the snippet files.
-- Custom Sublime fields outside of `<content>`, `<tabTrigger>`, and `<scope>` are ignored.
-- Conversion stops when a malformed XML file is detected to avoid producing partial results.
+前往 `Node.js` 官网 [Node.js](https://nodejs.org/)下载 `Node.js`的 LTS 版本，安装成功后，执行
+```shell
+node -v
+npm -v
+```
+以验证是否成功安装。
 
-If you hit other edge cases, please open an issue with the problematic snippet file attached.
+### 2. 安装 `vsce` 扩展打包工具
 
-## Development
+```shell
+npm install -g vsce
+```
 
-1. `npm install`
-2. Run the **Launch Extension** configuration (`F5`) to open a new Extension Development Host.
-3. Trigger the `Sublime: Convert Snippets` command inside the dev host and select a folder with sample snippets (see `testcases/` for small fixtures).
-4. Run `npm test` to execute the VS Code extension tests or `npm run lint` for ESLint.
+安装成功后，执行
+```shell
+vsce --version
+```
 
-## Release Notes
+验证是否成功安装。
 
-### 0.0.1
 
-- Initial release with folder-based conversion and user/workspace snippet output.
+## Build & Package / 构建与打包
+
+### 1.安装项目所需依赖
+
+```shell
+npm install
+```
+
+### 编译插件
+
+```shell
+npm run compile
+```
+
+该步骤会将 `TypeScript` 编译为 `JavaScript`
+
+### 打包为 `.vsix`文件
+
+```shell
+vsce package
+```
+成功后将生成类似如下文件：
+```shell
+{@package.name-@package.version}.vsix
+```
+
+### 安装 `.vsix` 插件
+
+在 `Visual Studio Code`的“扩展”`(Ctrl + Shift + X)` 的右上角三个点处选择“从 `VSIX` 安装”，或者直接在扩展市场中搜索：`Sublime snippet for VSCode`
