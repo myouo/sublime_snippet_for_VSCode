@@ -1,7 +1,9 @@
 # Sublime Snippet Converter
 
-一个用于将 **Sublime Text Snippet** 转换为 **VS Code Snippet** 的扩展。
-本项目会自动识别当前操作系统，并根据系统类型匹配对应的 **VS Code Snippet** 存储目录，将生成的 Snippet 文件写入系统目录中；同时，会在当前工作区中额外拷贝一份，方便用户查看与管理。
+本项目基于 MIT License 发布，请在使用本项目时遵守相关协议。
+
+本项目是一个用于将 **Sublime Text Snippet** 转换为 **VS Code Snippet** 的 `vsix` 扩展。
+拓展会自动识别当前操作系统，并根据系统类型匹配对应的 **VS Code Snippet** 存储目录，将生成的 Snippet 文件写入系统目录中；同时，会在当前工作区中额外拷贝一份，方便用户查看与管理。
 
 ## 使用方法
 
@@ -76,3 +78,4 @@ vsce package
 ### 安装 `.vsix` 插件
 
 在 `Visual Studio Code`的“扩展”`(Ctrl + Shift + X)` 的右上角三个点处选择“从 `VSIX` 安装”，或者直接在扩展市场中搜索：`Sublime snippet for VSCode`
+
